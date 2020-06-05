@@ -1,5 +1,5 @@
 # js-olympic_particles
-Particle animation where particles take the shape of the olympic rings I built using <a href="https://p5js.org/">p5.js</a>. I also use this as default proyect.
+Particle animation where particles take the shape of the olympic rings I built using <a href="https://p5js.org/">p5.js</a>.
 ## URL
 This proyect is hosted by github pages at <a href="https://pabloqb2000.github.io/js-olympic_particles/">this link</a>.
 ## Controls
