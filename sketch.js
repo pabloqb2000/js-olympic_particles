@@ -1,46 +1,67 @@
-let sld, btn, tggl, cPicker, optBox;
-let circle, rectangle;
+const PARTICLES = 200;
+const AROS = false;
+
+var circles = [];
+
 
 function setup() {
-	createCanvas(windowWidth, windowHeight+5);
-	background(32);
-
-	// Create UI elements
-	sld = new Slider(start=0, end=255, value=32, 0, 0, width/12, height/60, null, "Background");
-	btn = new Button(x=0, y=0, width/12, height/30, "Reset", resetValue);
-	
-	tggl = new ToggleButton(0,0,width/12,height/30,"Discrete", discretice);
-	cPicker = new ColorPicker(0,0, width/12, height/30, null, "Color 1");
-
-	optBox = new OptionsBox(["Option1", "Option2", "Option3"], 20, () => console.log("Option changed"));
-
-	// Add two draggable elements
-	circle = new DragCircle(createVector(width/2 + 40, height/2 + 40), 20);
-	rectangle = new DragRect(createVector(width/2 - 40, height/2 - 40), 40, 40);
-
-	// Start UI
-	UI.tableWidth = 1;
-	UI.tableHeight = 100;
-	UI.distrubute();
+  frameRate(30);
+  createCanvas(windowWidth, windowHeight);
+  background(32);
+  
+  noStroke();
+  circles.push(new Circle(width / 2 - 250, height / 2 - 100, [0, 255, 255]));
+  circles.push(new Circle(width / 2, height / 2 - 100, [255, 255, 255]));
+  circles.push(new Circle(width / 2 + 250, height / 2 - 100, [255, 0, 0]));
+  circles.push(new Circle(width / 2 - 125, height / 2 + 100, [255, 255, 0]));
+  circles.push(new Circle(width / 2 + 125, height / 2 + 100, [0, 255, 0]));
 }
 
 function draw() {
-	// Draw UI and draggable elements
-	background(sld.value);
-	UI.update();
-	UI.draw();
-	Drag.update();
-	Drag.draw();
-
-	
-	translate(13/24*width, height/2);
-	scale(1,-1);
+  background(32, 160);
+  for (let circle of circles){
+    circle.actualize();
+    circle.show();
+  }
+  if(mouseIsPressed){
+    circles[floor(random(5))].addPrt({x: mouseX, y: mouseY});
+  }
 }
 
-function resetValue() {
-	sld.value = 32;
-}
+class Circle{
+  constructor(x,y,color){
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.r = 100;
+    this.state = this.r = random(135, 165);
+    this.rockets = [];
+    for(let i = 0; i < PARTICLES; i++){
+      this.rockets.push(new Rocket(this));
+    }
+  }
+  actualize(){
+    this.state--;
+    if(this.state <= 0){
+      this.state = random(30);
+      this.r = random(135, 165);
+    }
+  }
+  addPrt(pos){
+    this.rockets.push(new Rocket(this, pos));
+  }
+  show(){
+    if(AROS){
+      stroke(this.color[0], this.color[1], this.color[2]);
+      noFill();
+      ellipse(this.x, this.y, this.r * 2, this.r * 2);
+      noStroke();
+    }
 
-function discretice() {
-	sld.step = (sld.step == null ? 20 : null);
+    fill(this.color[0], this.color[1], this.color[2]);
+    for(let rocket of this.rockets){
+      rocket.actualize();
+      rocket.show();
+    }
+  }
 }
