@@ -5,7 +5,7 @@ var circles = [];
 
 
 function setup() {
-	textFont("Sarpanch");
+	textFont("Orbitron");
   frameRate(30);
   createCanvas(windowWidth, windowHeight);
   background(32);
